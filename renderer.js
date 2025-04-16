@@ -10,17 +10,6 @@ const historyContainer = document.getElementById("history-container");
 
 // Test history array
 let testHistory = [];
-let isSpeedTestRunning = false;
-
-// Update UI state during speed test
-function updateSpeedTestState(running) {
-  isSpeedTestRunning = running;
-  runTestButton.disabled = running;
-  runTestButton.textContent = running ? "Running Test..." : "Run Speed Test";
-  if (running) {
-    currentSpeedElement.textContent = "--";
-  }
-}
 
 // Load configuration on startup
 async function loadConfig() {
@@ -46,9 +35,9 @@ async function saveConfig() {
 
 // Run a speed test
 async function runSpeedTest() {
-  if (isSpeedTestRunning) return;
-
-  updateSpeedTestState(true);
+  runTestButton.disabled = true;
+  runTestButton.textContent = "Running Test...";
+  currentSpeedElement.textContent = "--";
 
   try {
     const downloadSpeed = await window.electronAPI.runSpeedTest();
@@ -61,7 +50,8 @@ async function runSpeedTest() {
     console.error("Failed to run speed test:", error);
     currentSpeedElement.textContent = "Error";
   } finally {
-    updateSpeedTestState(false);
+    runTestButton.disabled = false;
+    runTestButton.textContent = "Run Speed Test";
   }
 }
 
@@ -107,12 +97,5 @@ window.electronAPI.onSpeedTestResult((result) => {
   updateHistoryDisplay();
 });
 
-// Listen for speed test state changes from main process
-window.electronAPI.onSpeedTestStateChange((running) => {
-  updateSpeedTestState(running);
-});
-
 // Initialize
 loadConfig();
-// Set initial state to running since main.js starts a test on launch
-updateSpeedTestState(true);
