@@ -16,4 +16,10 @@ contextBridge.exposeInMainWorld("electronAPI", {
       ipcRenderer.removeAllListeners("speed-test-state");
     };
   },
+  onLiveSpeedUpdate: (callback) => {
+    ipcRenderer.on("live-speed-update", (event, speed) => callback(speed));
+    return () => {
+      ipcRenderer.removeAllListeners("live-speed-update");
+    };
+  },
 });

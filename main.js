@@ -93,8 +93,19 @@ async function runSpeedTest() {
       });
     }
 
-    // Run the test
-    const test = await speedTest({ acceptLicense: true, acceptGdpr: true });
+    // Run the test with progress updates
+    const test = await speedTest({
+      acceptLicense: true,
+      acceptGdpr: true,
+      progress: (progress) => {
+        if (mainWindow && progress.download) {
+          // Convert bytes/s to Mbps
+          const currentSpeed = (progress.download.bandwidth || 0) / 125000;
+          mainWindow.webContents.send("live-speed-update", currentSpeed);
+        }
+      },
+    });
+
     const downloadSpeed = test.download.bandwidth / 125000; // Convert to Mbps
 
     // Send results to renderer

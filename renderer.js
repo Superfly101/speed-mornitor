@@ -10,6 +10,26 @@ const historyContainer = document.getElementById("history-container");
 
 // Test history array
 let testHistory = [];
+let isSpeedTestRunning = false;
+
+// Update UI state during speed test
+function updateSpeedTestState(running) {
+  isSpeedTestRunning = running;
+  runTestButton.disabled = running;
+  runTestButton.textContent = running ? "Running Test..." : "Run Speed Test";
+  if (running) {
+    currentSpeedElement.textContent = "0.00";
+  }
+}
+
+// Update speed display
+function updateSpeedDisplay(speed) {
+  if (typeof speed === "number") {
+    currentSpeedElement.textContent = speed.toFixed(2);
+  } else {
+    currentSpeedElement.textContent = speed;
+  }
+}
 
 // Load configuration on startup
 async function loadConfig() {
@@ -35,23 +55,22 @@ async function saveConfig() {
 
 // Run a speed test
 async function runSpeedTest() {
-  runTestButton.disabled = true;
-  runTestButton.textContent = "Running Test...";
-  currentSpeedElement.textContent = "--";
+  if (isSpeedTestRunning) return;
+
+  updateSpeedTestState(true);
 
   try {
     const downloadSpeed = await window.electronAPI.runSpeedTest();
     if (downloadSpeed !== null) {
-      currentSpeedElement.textContent = downloadSpeed.toFixed(2);
+      updateSpeedDisplay(downloadSpeed);
     } else {
-      currentSpeedElement.textContent = "Error";
+      updateSpeedDisplay("Error");
     }
   } catch (error) {
     console.error("Failed to run speed test:", error);
-    currentSpeedElement.textContent = "Error";
+    updateSpeedDisplay("Error");
   } finally {
-    runTestButton.disabled = false;
-    runTestButton.textContent = "Run Speed Test";
+    updateSpeedTestState(false);
   }
 }
 
@@ -93,9 +112,24 @@ saveConfigButton.addEventListener("click", saveConfig);
 
 // Listen for speed test results from main process
 window.electronAPI.onSpeedTestResult((result) => {
+  updateSpeedDisplay(result.download);
   testHistory.push(result);
   updateHistoryDisplay();
 });
 
+// Listen for speed test state changes from main process
+window.electronAPI.onSpeedTestStateChange((running) => {
+  updateSpeedTestState(running);
+});
+
+// Listen for live speed updates
+window.electronAPI.onLiveSpeedUpdate((speed) => {
+  if (isSpeedTestRunning) {
+    updateSpeedDisplay(speed);
+  }
+});
+
 // Initialize
 loadConfig();
+// Set initial state to running since main.js starts a test on launch
+updateSpeedTestState(true);
