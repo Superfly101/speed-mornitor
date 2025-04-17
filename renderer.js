@@ -11,6 +11,24 @@ const historyContainer = document.getElementById("history-container");
 // Test history array
 let testHistory = [];
 let isSpeedTestRunning = false;
+let originalConfig = {}; // Store original config for comparison
+
+// Tab switching functionality
+const tabButtons = document.querySelectorAll(".tab-button");
+const tabContents = document.querySelectorAll(".tab-content");
+
+tabButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    // Remove active class from all buttons and hide all contents
+    tabButtons.forEach((btn) => btn.classList.remove("active"));
+    tabContents.forEach((content) => content.classList.add("hidden"));
+
+    // Add active class to clicked button and show corresponding content
+    button.classList.add("active");
+    const tabId = button.dataset.tab;
+    document.getElementById(tabId).classList.remove("hidden");
+  });
+});
 
 // Update UI state during speed test
 function updateSpeedTestState(running) {
@@ -31,17 +49,63 @@ function updateSpeedDisplay(speed) {
   }
 }
 
+// Validate settings form
+function validateSettings() {
+  const threshold = parseInt(thresholdInput.value);
+  const interval = parseInt(intervalInput.value);
+
+  if (!thresholdInput.value || !intervalInput.value) {
+    return false;
+  }
+
+  if (isNaN(threshold) || threshold < 1 || threshold > 1000) {
+    return false;
+  }
+
+  if (isNaN(interval) || interval < 5 || interval > 1440) {
+    return false;
+  }
+
+  return true;
+}
+
+// Check if settings have changed
+function hasSettingsChanged() {
+  return (
+    parseInt(thresholdInput.value) !== originalConfig.threshold ||
+    parseInt(intervalInput.value) !== originalConfig.interval ||
+    notificationsCheckbox.checked !== originalConfig.notifications ||
+    startupCheckbox.checked !== originalConfig.runAtStartup
+  );
+}
+
+// Update save button state
+function updateSaveButtonState() {
+  saveConfigButton.disabled = !validateSettings() || !hasSettingsChanged();
+}
+
 // Load configuration on startup
 async function loadConfig() {
   const config = await window.electronAPI.getConfig();
+  originalConfig = { ...config }; // Store original config
+
   thresholdInput.value = config.threshold;
   intervalInput.value = config.interval;
   notificationsCheckbox.checked = config.notifications;
   startupCheckbox.checked = config.runAtStartup;
+
+  updateSaveButtonState();
 }
 
 // Save configuration
 async function saveConfig() {
+  if (!validateSettings()) {
+    alert(
+      "Please ensure all fields are filled with valid values:\n- Threshold: 1-1000 Mbps\n- Interval: 5-1440 minutes"
+    );
+    return;
+  }
+
   const config = {
     threshold: parseInt(thresholdInput.value, 10),
     interval: parseInt(intervalInput.value, 10),
@@ -50,6 +114,8 @@ async function saveConfig() {
   };
 
   await window.electronAPI.updateConfig(config);
+  originalConfig = { ...config }; // Update original config
+  updateSaveButtonState();
   alert("Configuration saved!");
 }
 
@@ -128,6 +194,12 @@ window.electronAPI.onLiveSpeedUpdate((speed) => {
     updateSpeedDisplay(speed);
   }
 });
+
+// Add input event listeners for settings
+thresholdInput.addEventListener("input", updateSaveButtonState);
+intervalInput.addEventListener("input", updateSaveButtonState);
+notificationsCheckbox.addEventListener("change", updateSaveButtonState);
+startupCheckbox.addEventListener("change", updateSaveButtonState);
 
 // Initialize
 loadConfig();

@@ -19,61 +19,134 @@ body {
 }
 
 h1 {
-  margin-bottom: 20px;
+  margin-bottom: 30px;
   text-align: center;
-}
-
-.card {
-  background-color: white;
-  border-radius: 8px;
-  padding: 20px;
-  margin-bottom: 20px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-h2 {
-  margin-bottom: 15px;
   color: #2c3e50;
+}
+
+/* Tabs styling */
+.tabs {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+  gap: 10px;
+}
+
+.tab-button {
+  padding: 12px 24px;
+  border: none;
+  background-color: #e0e0e0;
+  color: #666;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.3s ease;
+}
+
+.tab-button.active {
+  background-color: #3498db;
+  color: white;
+}
+
+.tab-content {
+  display: block;
+}
+
+.tab-content.hidden {
+  display: none;
+}
+
+/* Speed test card styling */
+.speed-card {
+  background-color: white;
+  border-radius: 12px;
+  padding: 40px;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
 .speed-display {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: center;
-  margin: 20px 0;
+  margin: 30px 0;
 }
 
 .speed-value {
-  font-size: 48px;
+  font-size: 72px;
   font-weight: bold;
   color: #2980b9;
 }
 
 .speed-unit {
-  font-size: 20px;
+  font-size: 24px;
   color: #7f8c8d;
-  margin-left: 10px;
+  margin-left: 15px;
 }
 
-button {
+/* Buttons styling */
+.primary-button {
   background-color: #3498db;
   color: white;
   border: none;
-  padding: 10px 15px;
-  border-radius: 4px;
+  padding: 15px 30px;
+  border-radius: 8px;
   cursor: pointer;
-  font-size: 14px;
-  display: block;
-  margin: 10px auto;
+  font-size: 18px;
+  font-weight: 600;
+  transition: transform 0.2s, background-color 0.3s;
+}
+
+.primary-button:hover {
+  background-color: #2980b9;
+  transform: translateY(-2px);
+}
+
+.primary-button:disabled {
+  background-color: #bdc3c7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.primary-button:disabled:hover {
+  background-color: #bdc3c7;
+  transform: none;
+}
+
+.secondary-button {
+  background-color: #95a5a6;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
   transition: background-color 0.3s;
 }
 
-button:hover {
-  background-color: #2980b9;
+.secondary-button:hover {
+  background-color: #7f8c8d;
+}
+
+.secondary-button:disabled {
+  background-color: #d5dbdb;
+  cursor: not-allowed;
+}
+
+.secondary-button:disabled:hover {
+  background-color: #d5dbdb;
+}
+
+/* Settings card styling */
+.settings-card {
+  background-color: white;
+  border-radius: 12px;
+  padding: 30px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
 .form-group {
-  margin-bottom: 15px;
+  margin-bottom: 20px;
   display: flex;
   align-items: center;
 }
@@ -81,13 +154,21 @@ button:hover {
 .form-group label {
   flex: 1;
   margin-right: 15px;
+  color: #2c3e50;
 }
 
 .form-group input[type="number"] {
-  width: 100px;
-  padding: 8px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  width: 120px;
+  padding: 10px;
+  border: 2px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 16px;
+  transition: border-color 0.3s;
+}
+
+.form-group input[type="number"]:focus {
+  border-color: #3498db;
+  outline: none;
 }
 
 .checkbox {
@@ -97,6 +178,20 @@ button:hover {
 
 .checkbox input {
   margin-right: 10px;
+  width: 18px;
+  height: 18px;
+}
+
+/* History section styling */
+.history-preview {
+  margin-top: 40px;
+  padding-top: 30px;
+  border-top: 2px solid #f0f0f0;
+}
+
+.history-preview h3 {
+  color: #2c3e50;
+  margin-bottom: 15px;
 }
 
 .history-container {
@@ -105,10 +200,11 @@ button:hover {
 }
 
 .history-item {
-  padding: 10px;
+  padding: 12px;
   border-bottom: 1px solid #eee;
   display: flex;
   justify-content: space-between;
+  font-size: 14px;
 }
 
 .history-item:last-child {
