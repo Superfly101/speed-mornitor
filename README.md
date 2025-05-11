@@ -2,8 +2,13 @@
 
 An Electron-based desktop application for monitoring your internet connection speed with real-time notifications and history tracking.
 
+## Screenshots
 
-![Application Interface](assets/interface.png)
+### Main Speed Test Interface
+![Speed Test Interface](assets/interface.png)
+
+### Settings Panel
+![Settings Interface](assets/settings.png)
 
 ## Features
 
