@@ -2,47 +2,64 @@
 <html>
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f5f5f5" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#1a1a1a" media="(prefers-color-scheme: dark)">
     <title>Internet Speed Monitor</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <div class="container">
       <h1>Internet Speed Monitor</h1>
 
-      <div class="card">
-        <h2>Current Speed</h2>
-        <div class="speed-display">
-          <div class="speed-value" id="current-speed">--</div>
-          <div class="speed-unit">Mbps</div>
-        </div>
-        <button id="run-test">Run Speed Test</button>
+      <div class="tabs">
+        <button class="tab-button active" data-tab="speed-test">Speed Test</button>
+        <button class="tab-button" data-tab="settings">Settings</button>
       </div>
 
-      <div class="card">
-        <h2>Configuration</h2>
-        <div class="form-group">
-          <label>Speed Threshold (Mbps):</label>
-          <input type="number" id="threshold" min="1" max="1000" />
+      <div class="tab-content" id="speed-test">
+        <div class="speed-card">
+          <div class="speed-display">
+            <div class="speed-value" id="current-speed">--</div>
+            <div class="speed-unit">Mbps</div>
+          </div>
+          <div class="speed-gauge">
+            <!-- We'll add a visual gauge here later -->
+          </div>
+          <button id="run-test" class="primary-button">Run Speed Test</button>
+          
+          <div class="history-preview">
+            <h3>Recent Tests</h3>
+            <div class="history-container" id="history-container">
+              <p>No test history available yet.</p>
+            </div>
+          </div>
         </div>
-        <div class="form-group">
-          <label>Check Interval (minutes):</label>
-          <input type="number" id="interval" min="5" max="1440" />
-        </div>
-        <div class="form-group checkbox">
-          <input type="checkbox" id="notifications" />
-          <label for="notifications">Enable Notifications</label>
-        </div>
-        <div class="form-group checkbox">
-          <input type="checkbox" id="startup" />
-          <label for="startup">Run at System Startup</label>
-        </div>
-        <button id="save-config">Save Configuration</button>
       </div>
 
-      <div class="card">
-        <h2>Test History</h2>
-        <div class="history-container" id="history-container">
-          <p>No test history available yet.</p>
+      <div class="tab-content hidden" id="settings">
+        <div class="settings-card">
+          <h2>Configuration</h2>
+          <div class="form-group">
+            <label>Speed Threshold (Mbps):</label>
+            <input type="number" id="threshold" min="1" max="1000" />
+          </div>
+          <div class="form-group">
+            <label>Check Interval (minutes):</label>
+            <input type="number" id="interval" min="5" max="1440" />
+          </div>
+          <div class="form-group checkbox">
+            <input type="checkbox" id="notifications" />
+            <label for="notifications">Enable Notifications</label>
+          </div>
+          <div class="form-group checkbox">
+            <input type="checkbox" id="startup" />
+            <label for="startup">Run at System Startup</label>
+          </div>
+          <button id="save-config" class="secondary-button">Save Configuration</button>
         </div>
       </div>
     </div>

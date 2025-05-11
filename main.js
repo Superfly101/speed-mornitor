@@ -16,6 +16,9 @@ let config = {
   runAtStartup: false,
 };
 
+// At the top with other constants
+const NOTIFICATION_ICON = path.join(__dirname, "assets/notification-icon.ico");
+
 function createWindow() {
   mainWindow = new BrowserWindow({
     width: 800,
@@ -89,12 +92,23 @@ async function runSpeedTest() {
       notifier.notify({
         title: "Speed Test",
         message: "Running speed test...",
-        icon: path.join(__dirname, "assets/icon.png"),
+        icon: NOTIFICATION_ICON,
       });
     }
 
-    // Run the test
-    const test = await speedTest({ acceptLicense: true, acceptGdpr: true });
+    // Run the test with progress updates
+    const test = await speedTest({
+      acceptLicense: true,
+      acceptGdpr: true,
+      progress: (progress) => {
+        if (mainWindow && progress.download) {
+          // Convert bytes/s to Mbps
+          const currentSpeed = (progress.download.bandwidth || 0) / 125000;
+          mainWindow.webContents.send("live-speed-update", currentSpeed);
+        }
+      },
+    });
+
     const downloadSpeed = test.download.bandwidth / 125000; // Convert to Mbps
 
     // Send results to renderer
@@ -113,7 +127,7 @@ async function runSpeedTest() {
         message: `Your download speed (${downloadSpeed.toFixed(
           2
         )} Mbps) exceeds the threshold (${config.threshold} Mbps)!`,
-        icon: path.join(__dirname, "assets/icon.png"),
+        icon: NOTIFICATION_ICON,
       });
     }
 
@@ -125,7 +139,7 @@ async function runSpeedTest() {
       notifier.notify({
         title: "Speed Test Error",
         message: "Failed to run speed test. Check your connection.",
-        icon: path.join(__dirname, "assets/icon.png"),
+        icon: NOTIFICATION_ICON,
       });
     }
 
